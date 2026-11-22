@@ -100,6 +100,13 @@ final class FileSessionTest {
         check(session.handle(call(2, "phone_open_tab", target.packageName).toString()) == null, "read cannot escalate to click");
         check(new JSONObject(tab.handle(call(1, stopwatch.tool(), stopwatch.packageName).toString())).getBoolean("ok")
             && reads.get() == 3, "approved tab operation");
+        var qqOpen = PhoneScreen.Target.requested("打开 QQ");
+        check(qqOpen == PhoneScreen.Target.QQ_OPEN && PhoneScreen.Target.requested("打开 QQ 并发送消息") == null,
+            "plain QQ launch is distinct from search and messaging");
+        var launch = new FileSession(ID, qqOpen, (title, detail) -> false, read);
+        check(launch.handle(call(1, qq.tool(), qq.packageName).toString()) == null, "launch cannot be replaced with search");
+        check(new JSONObject(launch.handle(call(1, qqOpen.tool(), qqOpen.packageName).toString())).getBoolean("ok")
+            && reads.get() == 4, "plain QQ launch is dispatched once");
         System.out.println("PASS screen task app binding, confirmation, scope isolation and single read");
     }
 

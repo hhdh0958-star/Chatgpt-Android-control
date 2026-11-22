@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="dev.nativeagent.probe" android:versionCode="45" android:versionName="0.23">
+    package="dev.nativeagent.probe" android:versionCode="51" android:versionName="0.24.5">
     <uses-sdk android:minSdkVersion="34" android:targetSdkVersion="36" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <queries>

@@ -36,7 +36,8 @@ final class PhoneScreen {
         WECHAT("微信", "com.tencent.mm"),
         STOPWATCH("秒表", "com.coloros.alarmclock", "global"),
         WORLD_CLOCK("世界时钟", "com.coloros.alarmclock", "clock"),
-        QQ_SEARCH("QQ搜索", "com.tencent.mobileqq");
+        QQ_SEARCH("QQ搜索", "com.tencent.mobileqq"),
+        QQ_OPEN("QQ", "com.tencent.mobileqq");
 
         final String label;
         final String packageName;
@@ -54,6 +55,7 @@ final class PhoneScreen {
 
         String tool() {
             if (this == QQ_SEARCH) return "phone_open_search";
+            if (this == QQ_OPEN) return "phone_open_app";
             return tabId == null ? "phone_read_screen" : "phone_open_tab";
         }
 
@@ -62,8 +64,9 @@ final class PhoneScreen {
                 .replaceFirst("[。.!！]$", "").strip();
             if (command.matches("打开\\s*(?i:qq)\\s*(?:的)?\\s*搜索(?:页)?") || qqQuery(request) != null) return QQ_SEARCH;
             if (command.equalsIgnoreCase("open QQ search")) return QQ_SEARCH;
+            if (command.matches("打开\\s*(?i:qq)") || command.equalsIgnoreCase("open QQ")) return QQ_OPEN;
             for (Target target : values()) {
-                if (target == QQ_SEARCH) continue;
+                if (target == QQ_SEARCH || target == QQ_OPEN) continue;
                 String expected = "打开" + (target.tabId != null ? "时钟的" : "") + target.label;
                 if (command.equals(expected + "并读取当前页面")
                     || (target.tabId != null && command.equals(expected))) return target;
@@ -76,6 +79,23 @@ final class PhoneScreen {
             throws IOException, InterruptedException, JSONException {
         awaitWindow(service, CHAT, chatWindow, 3500);
         launch(service, target.packageName);
+        if (target == Target.QQ_OPEN) {
+            AccessibilityNodeInfo root;
+            try {
+                root = awaitWindow(service, target.packageName, -1, 20_000);
+            } catch (IOException unavailable) {
+                throw new IOException("QQ did not reach the foreground. Check whether Android is waiting for launch approval.", unavailable);
+            }
+            Thread.sleep(600);
+            var foreground = awaitWindow(service, target.packageName, root.getWindowId(), 1500);
+            if (Thread.currentThread().isInterrupted()) throw new InterruptedException();
+            if (!matches(service.getRootInActiveWindow(0), target.packageName, foreground.getWindowId())) {
+                throw new IOException("QQ left the foreground before returning");
+            }
+            returnToChat(service);
+            awaitWindow(service, CHAT, chatWindow, 5000);
+            return new JSONObject().put("app", "QQ").put("foregroundVerified", true);
+        }
         int targetWindow = -1;
         boolean clicked = false;
         LinkedHashSet<String> labels = new LinkedHashSet<>();
@@ -243,7 +263,12 @@ final class PhoneScreen {
     }
 
     private static boolean qqSearchVisible(AccessibilityNodeInfo root, Target target) {
-        return root.findAccessibilityNodeInfosByViewId(target.packageName + ":id/b9j").stream()
+        return visibleControl(root, target, "b9j")
+            || (visibleControl(root, target, "cyj") && visibleControl(root, target, "result_layout"));
+    }
+
+    private static boolean visibleControl(AccessibilityNodeInfo root, Target target, String id) {
+        return root.findAccessibilityNodeInfosByViewId(target.packageName + ":id/" + id).stream()
             .anyMatch(node -> matches(node, target.packageName, root.getWindowId()) && node.isVisibleToUser());
     }
 

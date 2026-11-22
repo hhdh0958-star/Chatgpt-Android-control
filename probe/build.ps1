@@ -1,7 +1,8 @@
 param(
     [Parameter(Mandatory)][string]$AndroidJar,
     [Parameter(Mandatory)][string]$BuildTools,
-    [Parameter(Mandatory)][string]$OutputDirectory
+    [Parameter(Mandatory)][string]$OutputDirectory,
+    [switch]$QqPrototype
 )
 
 $ErrorActionPreference = 'Stop'
@@ -35,6 +36,27 @@ $sources += Get-ChildItem -LiteralPath (Join-Path $PSScriptRoot '../projecttree'
     Select-Object -ExpandProperty FullName
 $sources += Get-ChildItem -LiteralPath (Join-Path $PSScriptRoot '../runner/src') -Filter '*.java' -File |
     Select-Object -ExpandProperty FullName
+if ($QqPrototype) {
+    $apk = Join-Path $output 'native-agent-qq-prototype.apk'
+    $package = 'dev.nativeagent.probe'
+    $prototypePackage = 'dev.nativeagent.qqprototype'
+    $xml = [IO.File]::ReadAllText($manifest).Replace("package=`"$package`"", "package=`"$prototypePackage`"")
+    $xml = $xml.Replace('android:name=".', "android:name=`"$package.").Replace('Native Agent Probe', 'Native Agent QQ Prototype')
+    $xml = $xml.Replace("android:authorities=`"$package.", "android:authorities=`"$prototypePackage.")
+    [IO.File]::WriteAllText($manifest, $xml)
+    # The Java classes keep their namespace. Only the two content provider IDs change.
+    $sources = foreach ($source in $sources) {
+        $name = [IO.Path]::GetFileName($source)
+        if ($name -in 'PhoneCapture.java', 'CaptureDocuments.java') {
+            $stagedSource = Join-Path $stage $name
+            $java = [IO.File]::ReadAllText($source).Replace("`"$package.", "`"$prototypePackage.")
+            [IO.File]::WriteAllText($stagedSource, $java)
+            $stagedSource
+        } else {
+            $source
+        }
+    }
+}
 $assets = Join-Path $stage 'assets'
 New-Item -ItemType Directory -Force -Path $assets | Out-Null
 Copy-Item -Recurse -Force -LiteralPath (Join-Path $PSScriptRoot '../runner/assets/python') -Destination $assets

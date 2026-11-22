@@ -141,14 +141,16 @@ final class FileSession {
             case "phone_calculate" -> Set.of("id", "step", "tool", "path", "expression");
             case "phone_read_calculator" -> Set.of("id", "step", "tool", "path");
             case "phone_timer" -> Set.of("id", "step", "tool", "path", "seconds");
-            case "diagnose_logcat", "phone_read_screen", "phone_open_tab", "phone_open_search" -> Set.of("id", "step", "tool", "path");
+            case "diagnose_logcat", "phone_read_screen", "phone_open_tab", "phone_open_search", "phone_open_app" ->
+                Set.of("id", "step", "tool", "path");
             case "run_python", "run_shell", "run_javascript" -> Set.of("id", "step", "tool", "path", "files");
             default -> Set.of();
         };
         if (!call.keySet().equals(fields)) return null;
         if ((logs != null) != tool.equals("diagnose_logcat") || (logs != null && nextStep != 1)) return null;
         if ((timer != null) != tool.equals("phone_timer") || (timer != null && nextStep != 1)) return null;
-        boolean screenTool = tool.equals("phone_read_screen") || tool.equals("phone_open_tab") || tool.equals("phone_open_search");
+        boolean screenTool = tool.equals("phone_read_screen") || tool.equals("phone_open_tab")
+            || tool.equals("phone_open_search") || tool.equals("phone_open_app");
         if ((screen != null) != screenTool || (screenTool && (nextStep != 1 || !screenTarget.tool().equals(tool)
             || !screenTarget.packageName.equals(call.get("path"))))) return null;
         boolean phoneTool = tool.equals("phone_calculate") || tool.equals("phone_read_calculator");
@@ -160,7 +162,7 @@ final class FileSession {
             String path = call.get("path");
             ProjectTools.validatePath(path, tool.equals("list_files") || tool.equals("search_files") || tool.startsWith("git_"));
             switch (tool) {
-                case "phone_open_search" -> {
+                case "phone_open_search", "phone_open_app" -> {
                     result.put("phone", screen.run());
                 }
                 case "phone_open_tab" -> {

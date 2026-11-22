@@ -19,7 +19,7 @@ final class LogDiagnostics {
     private static final Pattern TOOL = Pattern.compile(
         "tool=[a-z_]{1,32} step=[1-8] ok=(true|false) sha256=(?:[a-f0-9]{64}|-)"
         + "(?: (?:exitCode|timedOut|truncated|stdoutChars|stderrChars|errorCode|createdCommit|commit|timer|"
-        + "verifiedRunning|remainingSeconds|captureSha256|captureBytes|captureFailed)=[A-Za-z0-9_\\-]{1,64})*");
+        + "verifiedRunning|remainingSeconds|captureSha256|captureBytes|captureFailed|foregroundVerified|queryEntered)=[A-Za-z0-9_\\-]{1,64})*");
 
     static boolean request(String text) { return text.startsWith("请诊断手机Agent日志"); }
 

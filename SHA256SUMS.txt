@@ -41,3 +41,9 @@ f6a217b3d3a1c751a6e77ae00ef3f7d6c4d65a585f19cfd11ab79eb033bdfb73  native-agent-0
 3767b188a1aad1065a7c0cc84cc88544df2d3395edc27692bb90756b821ad3c4  native-agent-0.8-local.apk
 7ed991b502507b0a24207516c3bdfe1c6c286a28a32363ba8107c24727bd8f8f  native-agent-0.9-local.apk
 c327eea371ea8e7cf177763d5abac862165012ee60dd47ee634163732bb8bf74  native-agent-0.9.1-local.apk
+a851274ec05be78b39c07b6708c05616c7a64d439a76f41b4bac7d23bd265ddc  native-agent-0.24-qq-prototype.apk
+b41749b6d41c7580107c5e11586546cc5eda81056c27bfefb9b20ec1259c142d  native-agent-0.24.1-qq-prototype.apk
+44a37836d6c07824a14c81facb9f2be9554efd4143ebb9fef3e0634d5b94da48  native-agent-0.24.2-qq-prototype.apk
+17d1d85d741a5027d9954d9d0469ccdf9df9a641ff084fe64e3067b8afa289ce  native-agent-0.24.3-qq-prototype.apk
+4c3e467feed565a27c7a3ef5bc0d4e154d30ce337b1388884152bd29e08fec15  native-agent-0.24.4-qq-prototype.apk
+4e9f9db2d92f56285083feb936793a55470a2073aab023997d8b0d523a75ba2d  native-agent-0.24.5-qq-prototype.apk
