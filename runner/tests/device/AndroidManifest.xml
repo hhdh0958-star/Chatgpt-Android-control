@@ -1,0 +1,5 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="dev.nativeagent.tests">
+    <uses-sdk android:minSdkVersion="34" android:targetSdkVersion="36"/>
+    <application android:label="Native Agent runner tests" android:allowBackup="false"/>
+    <instrumentation android:name=".RunnerCheck" android:targetPackage="dev.nativeagent.probe"/>
+</manifest>

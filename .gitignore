@@ -1,0 +1,10 @@
+runner/.cache/
+*.p12
+*.idsig
+/artifacts/
+/evidence/
+/PHASES.md
+*.log
+*.png
+*.jpg
+*.apk

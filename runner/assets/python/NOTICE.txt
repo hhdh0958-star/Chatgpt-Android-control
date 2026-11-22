@@ -1,0 +1,14 @@
+This package includes unmodified runtime assets from the Pyodide 0.27.7 npm
+distribution. Source, build recipes and upstream notices for this version:
+https://github.com/pyodide/pyodide/tree/0.27.7
+https://registry.npmjs.org/pyodide/-/pyodide-0.27.7.tgz
+See LICENSE-Pyodide.txt (Mozilla Public License 2.0).
+
+The CPython runtime and standard library are distributed under the terms in
+LICENSE-CPython.txt. Source and additional component attributions:
+https://github.com/python/cpython/tree/v3.12.7
+https://docs.python.org/3.12/license.html
+The Emscripten runtime notices are in LICENSE-Emscripten.txt.
+
+index.html, host.js and worker.js integrate the bundled runtime with the
+Android application's offline WebView.

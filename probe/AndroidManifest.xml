@@ -1,0 +1,35 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="dev.nativeagent.probe" android:versionCode="45" android:versionName="0.23">
+    <uses-sdk android:minSdkVersion="34" android:targetSdkVersion="36" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <queries>
+        <package android:name="com.coloros.calculator" />
+        <package android:name="com.coloros.alarmclock" />
+        <package android:name="com.tencent.mm" />
+        <package android:name="com.tencent.mobileqq" />
+        <package android:name="com.openai.chatgpt" />
+    </queries>
+    <application android:label="Native Agent Probe" android:allowBackup="false">
+        <provider android:name=".PhoneCaptureProvider" android:authorities="dev.nativeagent.probe.captures"
+            android:exported="false" android:grantUriPermissions="true" />
+        <provider android:name=".CaptureDocuments" android:authorities="dev.nativeagent.probe.documents"
+            android:exported="true" android:grantUriPermissions="true" android:permission="android.permission.MANAGE_DOCUMENTS">
+            <intent-filter>
+                <action android:name="android.content.action.DOCUMENTS_PROVIDER" />
+            </intent-filter>
+        </provider>
+        <activity android:name=".WriteReviewActivity" android:exported="false" android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <service android:name="dev.nativeagent.runner.PythonService" android:exported="false" android:process=":python" />
+        <activity android:name="dev.nativeagent.projecttree.TreePickerActivity" android:exported="false"
+            android:excludeFromRecents="true" android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <service android:name=".ChatProbe" android:exported="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data android:name="android.accessibilityservice"
+                android:resource="@xml/chat_probe" />
+        </service>
+    </application>
+</manifest>
